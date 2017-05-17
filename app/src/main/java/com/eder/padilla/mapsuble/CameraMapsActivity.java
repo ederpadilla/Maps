@@ -1,5 +1,6 @@
 package com.eder.padilla.mapsuble;
 
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.support.v4.app.FragmentActivity;
@@ -18,6 +19,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
@@ -26,6 +28,7 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.Locale;
+import java.util.Map;
 
 public class CameraMapsActivity extends FragmentActivity implements OnMapReadyCallback,GoogleMap.OnMapClickListener,GoogleMap.OnMapLongClickListener {
 
@@ -61,6 +64,19 @@ public class CameraMapsActivity extends FragmentActivity implements OnMapReadyCa
     public void onMapReady(GoogleMap googleMap) {
 
         mMap=googleMap;
+        try {
+            // Customise the styling of the base map using a JSON object defined
+            // in a raw resource file.
+            boolean success = googleMap.setMapStyle(
+                    MapStyleOptions.loadRawResourceStyle(
+                            this, R.raw.aubergine_style_json));
+
+            if (!success) {
+                MapsActivity.log("Style parsing failed.");
+            }
+        } catch (Resources.NotFoundException e) {
+            MapsActivity.log("Can't find style. Error: "+e);
+        }
         googleMap.moveCamera(CameraUpdateFactory.zoomBy(5));
         //Mover la camara a un lugar en especifico con zoom
 
@@ -93,7 +109,7 @@ public class CameraMapsActivity extends FragmentActivity implements OnMapReadyCa
         crearCirculos();
         googleMap.setOnMapClickListener(this);
         // Configuración UI
-        mMap.getUiSettings().setAllGesturesEnabled(false);
+        //mMap.getUiSettings().setAllGesturesEnabled(false);
 
         // Eventos
         mMap.setOnMapLongClickListener(this);
